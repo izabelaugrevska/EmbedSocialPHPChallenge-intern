@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "json.file",
+      "type": "com.example.embedsocialphpchallengeintern.data.AppProperties",
+      "sourceType": "com.example.embedsocialphpchallengeintern.data.AppProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "json.file.path",
+      "type": "java.lang.String",
+      "sourceType": "com.example.embedsocialphpchallengeintern.data.AppProperties"
+    }
+  ],
+  "hints": []
+}
