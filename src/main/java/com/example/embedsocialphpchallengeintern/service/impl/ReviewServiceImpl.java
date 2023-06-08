@@ -58,22 +58,28 @@ public class ReviewServiceImpl implements ReviewService {
                 .filter(review -> review.getRating() >= filter.getMinimumRating())
                 .collect(Collectors.toList());
 
-        Comparator<Review> comparator = Comparator.comparing(Review::getRating, getRatingComparator(filter.getOrderByRating()))
-                .thenComparing(Review::getReviewCreatedOnDate, getReviewDateComparator(filter.getOrderByDate()));
+        Comparator<Review> comparator = Comparator.comparing(Review::getRating, getRatingComparator(filter.getOrderByRating()));
+
+        Comparator<Review> comparatorTxt = Comparator.comparing(Review::getReviewCreatedOnDate, getReviewDateComparator(filter.getOrderByDate()));
 
         filteredReviews.sort(comparator);
         if (filter.getPrioritizeByText()) {
             List<Review> reviewsWithText = filteredReviews.stream()
                     .filter(review -> review.getReviewText() != null && !review.getReviewText().isEmpty())
                     .collect(Collectors.toList());
+            reviewsWithText.sort(comparatorTxt);
 
             List<Review> reviewsWithoutText = filteredReviews.stream()
                     .filter(review -> review.getReviewText() == null || review.getReviewText().isEmpty())
                     .collect(Collectors.toList());
+            reviewsWithoutText.sort(comparatorTxt);
 
             filteredReviews = new ArrayList<>(reviewsWithText);
             filteredReviews.addAll(reviewsWithoutText);
+        } else {
+            filteredReviews.sort(comparatorTxt);
         }
+
 
         return filteredReviews;
     }
@@ -83,16 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private static Comparator<Date> getReviewDateComparator(OrderByDate orderByDate) {
-
-      //  return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
-//        if (orderByDate == OrderByDate.oldestFirst) {
-//            return Comparator.comparing(Date::getTime);
-//        } else {
-//            return Comparator.comparing(Date::getTime, Comparator.reverseOrder());
-//        }
-
-        Comparator<Date> comparator = Comparator.comparing(Date::getTime);
-        return orderByDate == OrderByDate.oldestFirst ? comparator : comparator.reversed();
+        return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
     }
 
 
