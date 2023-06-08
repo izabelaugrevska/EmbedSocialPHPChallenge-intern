@@ -12,5 +12,5 @@ public interface ReviewService {
 
     List<Review> findAll();
 
-    public List<Review> filterAndSortReviews(ReviewFilter filter, List<Review> reviews);
+    List<Review> filterAndSortReviews(ReviewFilter filter);
 }

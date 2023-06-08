@@ -10,65 +10,57 @@
 
 </head>
 <body>
-<h1>Review Filter</h1>
+<h1>Filter reviews:</h1>
+<br>
 
 <form th:action="@{/reviews/add}" method="post" th:object="${filter}">
     <div class="form-group" >
-    <label>
-        Prioritize by Text:
-<!--        <input type="checkbox" th:field="*{prioritizeByText}" />-->
-        <select for="exampleFormControlSelect1" th:field="*{prioritizeByText}">
+        <label for="exampleFormControlSelect1"> Order by rating: </label>
+            <select class="form-control" id="exampleFormControlSelect1" th:field="*{orderByRating}">
+                <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByRating).highestFirst}">Highest First</option>
+                <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByRating).lowestFirst}">Lowest First</option>
+            </select>
+    </div>
+    <br>
+    <div class="form-group" >
+        <label for="exampleFormControlSelect1"> Minimum rating: </label>
+            <select class="form-control" id="exampleFormControlSelect2" th:field="*{minimumRating}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+    </div>
+    <br>
+    <div class="form-group" >
+        <label for="exampleFormControlSelect1"> Order by date: </label>
+            <select class="form-control" id="exampleFormControlSelect3" th:field="*{orderByDate}">
+                <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByDate).newestFirst}" >Newest first</option>
+                <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByDate).oldestFirst}" >Oldest first</option>
+            </select>
+    </div>
+    <br>
+    <div class="form-group" >
+    <label for="exampleFormControlSelect1"> Prioritize by text: </label>
+        <select class="form-control" id="exampleFormControlSelect4" th:field="*{prioritizeByText}">
             <option value="true" th:selected="${filter.prioritizeByText != null && filter.prioritizeByText}">Yes</option>
             <option value="false" th:selected="${filter.prioritizeByText != null && !filter.prioritizeByText}">No</option>
         </select>
+    </div>
+    <br>
 
-    </label>
-    </div>
-    <br>
-    <div class="form-group" >
-    <label>
-        Order by Rating:
-        <select for="exampleFormControlSelect1" th:field="*{orderByRating}">
-            <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByRating).highestFirst}">Highest First</option>
-            <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByRating).lowestFirst}">Lowest First</option>
-        </select>
-    </label>
-    </div>
-    <br>
-    <div class="form-group" >
-    <label>
-        Order by Date:
-        <select for="exampleFormControlSelect1" th:field="*{orderByDate}">
-            <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByDate).newestFirst}" >Newest first</option>
-            <option th:value="${T(com.example.embedsocialphpchallengeintern.model.OrderByDate).oldestFirst}" >Oldest first</option>
-        </select>
-    </label>
-    </div>
-    <br>
-    <div class="form-group" >
-    <label>
-        Minimum Rating:
-        <select for="exampleFormControlSelect1" th:field="*{minimumRating}">
-            <option value="5">5</option>
-            <option value="4">4</option>
-            <option value="3">3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
-        </select>
-    </label>
-    </div>
-    <br>
-    <button type="submit">Apply Filter</button>
+    <button type="submit" class="btn btn-primary">Filter</button>
 </form>
 
 <h2>Filtered and Sorted Reviews</h2>
 
-<table>
+<table class="table">
     <thead>
     <tr>
-        <th>Text</th>
-        <th>Rating</th>
-        <th>Date</th>
+        <th scope="col">Text</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Date</th>
     </tr>
     </thead>
     <tbody>

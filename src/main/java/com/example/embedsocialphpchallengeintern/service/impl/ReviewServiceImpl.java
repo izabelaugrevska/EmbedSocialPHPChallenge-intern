@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -25,6 +26,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     }
 
+    @Override
     public void init() throws IOException {
         TypeReference<List<ReviewData>> typeReference = new TypeReference<>() {
         };
@@ -47,8 +49,9 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewList;
     }
 
-    public  List<Review> filterAndSortReviews(ReviewFilter filter, List<Review> reviews) {
-        List<Review> filteredReviews = new ArrayList<>(reviews);
+    @Override
+    public List<Review> filterAndSortReviews(ReviewFilter filter) {
+        List<Review> filteredReviews = new ArrayList<>(reviewList);
 
         filteredReviews = filteredReviews.stream()
                 .filter(review -> review.getRating() >= filter.getMinimumRating())
@@ -75,19 +78,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private static Comparator<Integer> getRatingComparator(OrderByRating orderByRating) {
-        if (orderByRating == OrderByRating.lowestFirst) {
-            return Comparator.naturalOrder();
-        } else {
-            return Comparator.reverseOrder();
-        }
+        return orderByRating == OrderByRating.lowestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
     }
 
     private static Comparator<String> getReviewDateComparator(OrderByDate orderByDate) {
-        if (orderByDate == OrderByDate.oldestFirst) {
-            return Comparator.naturalOrder();
-        } else {
-            return Comparator.reverseOrder();
-        }
+        return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
     }
 
 
