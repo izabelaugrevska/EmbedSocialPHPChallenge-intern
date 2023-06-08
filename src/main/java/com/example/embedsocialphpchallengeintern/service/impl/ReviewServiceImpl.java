@@ -50,20 +50,26 @@ public class ReviewServiceImpl implements ReviewService {
     public  List<Review> filterAndSortReviews(ReviewFilter filter, List<Review> reviews) {
         List<Review> filteredReviews = new ArrayList<>(reviews);
 
-        if (filter.getPrioritizeByText()) {
-            filteredReviews = filteredReviews.stream()
-                    .filter(review -> review.getReviewText() != null && !review.getReviewText().isEmpty())
-                    .collect(Collectors.toList());
-        }
         filteredReviews = filteredReviews.stream()
                 .filter(review -> review.getRating() >= filter.getMinimumRating())
                 .collect(Collectors.toList());
 
         Comparator<Review> comparator = Comparator.comparing(Review::getRating, getRatingComparator(filter.getOrderByRating()))
-                .thenComparing(Review::getReviewText, getTextComparator())
                 .thenComparing(Review::getReviewCreatedOnDate, getReviewDateComparator(filter.getOrderByDate()));
 
         filteredReviews.sort(comparator);
+        if (filter.getPrioritizeByText()) {
+            List<Review> reviewsWithText = filteredReviews.stream()
+                    .filter(review -> review.getReviewText() != null && !review.getReviewText().isEmpty())
+                    .collect(Collectors.toList());
+
+            List<Review> reviewsWithoutText = filteredReviews.stream()
+                    .filter(review -> review.getReviewText() == null || review.getReviewText().isEmpty())
+                    .collect(Collectors.toList());
+
+            filteredReviews = new ArrayList<>(reviewsWithText);
+            filteredReviews.addAll(reviewsWithoutText);
+        }
 
         return filteredReviews;
     }
@@ -76,10 +82,6 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private static Comparator<String> getTextComparator() {
-        return Comparator.nullsLast(Comparator.naturalOrder());
-    }
-
     private static Comparator<String> getReviewDateComparator(OrderByDate orderByDate) {
         if (orderByDate == OrderByDate.oldestFirst) {
             return Comparator.naturalOrder();
@@ -87,7 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
             return Comparator.reverseOrder();
         }
     }
-    
+
 
 }
 
