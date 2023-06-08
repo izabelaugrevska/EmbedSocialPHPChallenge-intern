@@ -1,6 +1,5 @@
 package com.example.embedsocialphpchallengeintern.service.impl;
 
-import com.example.embedsocialphpchallengeintern.data.ReviewData;
 import com.example.embedsocialphpchallengeintern.model.OrderByDate;
 import com.example.embedsocialphpchallengeintern.model.OrderByRating;
 import com.example.embedsocialphpchallengeintern.model.Review;
@@ -29,10 +28,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void init() throws IOException {
-        TypeReference<List<ReviewData>> typeReference = new TypeReference<>() {
+        TypeReference<List<Review>> typeReference = new TypeReference<>() {
         };
         InputStream inputStream = TypeReference.class.getResourceAsStream("/data/reviews.json");
-        List<ReviewData> reviews = new ObjectMapper().readValue(inputStream, typeReference);
+        List<Review> reviews = new ObjectMapper().readValue(inputStream, typeReference);
         if (reviews != null && !reviews.isEmpty()) {
             reviewList = new ArrayList<>();
             reviews.forEach(review -> reviewList.add(new Review(review.getId(), review.getReviewId(),
@@ -58,8 +57,8 @@ public class ReviewServiceImpl implements ReviewService {
                 .filter(review -> review.getRating() >= filter.getMinimumRating())
                 .collect(Collectors.toList());
 
-        Comparator<Review> comparator = Comparator.comparing(Review::getRating, getRatingComparator(filter.getOrderByRating()));
-        Comparator<Review> comparatorTxt = Comparator.comparing(Review::getReviewCreatedOnDate, getReviewDateComparator(filter.getOrderByDate()));
+        Comparator<Review> comparator = Comparator.comparing(Review::getRating, getRatingComparator(filter.getOrderByRating()))
+                .thenComparing(Review::getReviewCreatedOnDate, getReviewDateComparator(filter.getOrderByDate()));
 
        filteredReviews.sort(comparator);
         if (filter.getPrioritizeByText()) {
@@ -67,17 +66,15 @@ public class ReviewServiceImpl implements ReviewService {
                     .filter(review -> review.getReviewText() != null && !review.getReviewText().isEmpty())
                     .collect(Collectors.toList());
 
+
             List<Review> reviewsWithoutText = filteredReviews.stream()
                     .filter(review -> review.getReviewText() == null || review.getReviewText().isEmpty())
                     .collect(Collectors.toList());
-           reviewsWithoutText.sort(comparatorTxt);
 
             filteredReviews = new ArrayList<>(reviewsWithText);
             filteredReviews.addAll(reviewsWithoutText);
         }
-//        else {
-//            filteredReviews.sort(comparatorTxt);
-//        }
+
 
 
         return filteredReviews;
@@ -88,9 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private static Comparator<Date> getReviewDateComparator(OrderByDate orderByDate) {
-      //  return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
-        Comparator<Date> comparator = Comparator.comparing(Date::getTime);
-        return orderByDate == OrderByDate.oldestFirst ? comparator : comparator.reversed();
+       return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
     }
 
 
