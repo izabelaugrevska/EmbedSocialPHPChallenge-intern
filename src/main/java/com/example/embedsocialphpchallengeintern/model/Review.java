@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.lang.reflect.Array;
+import java.util.Date;
 import java.util.List;
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
@@ -26,7 +27,7 @@ public class Review {
     private Integer numShares;
     private Integer rating;
     private String reviewCreatedOn;
-    private String reviewCreatedOnDate;
+    private Date reviewCreatedOnDate;
     private Long reviewCreatedOnTime;
     private Long reviewerId;
     private String reviewerUrl;

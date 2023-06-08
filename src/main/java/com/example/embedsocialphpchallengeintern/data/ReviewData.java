@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,7 +22,7 @@ public class ReviewData {
     private Integer numShares;
     private Integer rating;
     private String reviewCreatedOn;
-    private String reviewCreatedOnDate;
+    private Date reviewCreatedOnDate;
     private Long reviewCreatedOnTime;
     private Long reviewerId;
     private String reviewerUrl;

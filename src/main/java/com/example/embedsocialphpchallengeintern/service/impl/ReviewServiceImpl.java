@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,8 +82,17 @@ public class ReviewServiceImpl implements ReviewService {
         return orderByRating == OrderByRating.lowestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
     }
 
-    private static Comparator<String> getReviewDateComparator(OrderByDate orderByDate) {
-        return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
+    private static Comparator<Date> getReviewDateComparator(OrderByDate orderByDate) {
+
+      //  return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
+//        if (orderByDate == OrderByDate.oldestFirst) {
+//            return Comparator.comparing(Date::getTime);
+//        } else {
+//            return Comparator.comparing(Date::getTime, Comparator.reverseOrder());
+//        }
+
+        Comparator<Date> comparator = Comparator.comparing(Date::getTime);
+        return orderByDate == OrderByDate.oldestFirst ? comparator : comparator.reversed();
     }
 
 
