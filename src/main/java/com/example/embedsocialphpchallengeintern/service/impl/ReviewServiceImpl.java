@@ -59,26 +59,25 @@ public class ReviewServiceImpl implements ReviewService {
                 .collect(Collectors.toList());
 
         Comparator<Review> comparator = Comparator.comparing(Review::getRating, getRatingComparator(filter.getOrderByRating()));
-
         Comparator<Review> comparatorTxt = Comparator.comparing(Review::getReviewCreatedOnDate, getReviewDateComparator(filter.getOrderByDate()));
 
-        filteredReviews.sort(comparator);
+       filteredReviews.sort(comparator);
         if (filter.getPrioritizeByText()) {
             List<Review> reviewsWithText = filteredReviews.stream()
                     .filter(review -> review.getReviewText() != null && !review.getReviewText().isEmpty())
                     .collect(Collectors.toList());
-            reviewsWithText.sort(comparatorTxt);
 
             List<Review> reviewsWithoutText = filteredReviews.stream()
                     .filter(review -> review.getReviewText() == null || review.getReviewText().isEmpty())
                     .collect(Collectors.toList());
-            reviewsWithoutText.sort(comparatorTxt);
+           reviewsWithoutText.sort(comparatorTxt);
 
             filteredReviews = new ArrayList<>(reviewsWithText);
             filteredReviews.addAll(reviewsWithoutText);
-        } else {
-            filteredReviews.sort(comparatorTxt);
         }
+//        else {
+//            filteredReviews.sort(comparatorTxt);
+//        }
 
 
         return filteredReviews;
@@ -89,7 +88,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private static Comparator<Date> getReviewDateComparator(OrderByDate orderByDate) {
-        return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
+      //  return orderByDate == OrderByDate.oldestFirst ? Comparator.naturalOrder() : Comparator.reverseOrder();
+        Comparator<Date> comparator = Comparator.comparing(Date::getTime);
+        return orderByDate == OrderByDate.oldestFirst ? comparator : comparator.reversed();
     }
 
 
